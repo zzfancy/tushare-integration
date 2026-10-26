@@ -14,6 +14,18 @@ Tushare Pro目前已稳定运行几年时间，其提供了大量的金融数据
 - 实现同步 Tushare Pro 接口数据到本地数据库，并支持全量同步与增量更新
 - 支持将数据写入到多种数据库
 
+## 分钟线行情展示
+
+项目提供基于 Streamlit + pyecharts 的分钟线展示与分析界面，读取 `stk_mins` 表，当日分时走势与前一交易日叠加对比：
+
+```shell
+pip install -r ui/requirements.txt
+streamlit run ui/app.py            # 读取 config.yaml 中配置的数据库
+TI_UI_DEMO=1 streamlit run ui/app.py  # 使用演示数据
+```
+
+详见 [docs/ui.md](docs/ui.md)。
+
 ## 目前支持的接口
 
 下列列表来自于Tushare Pro官方文档，标注了已完成的接口和不计划支持的接口

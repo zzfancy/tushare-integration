@@ -27,6 +27,9 @@ dependencies = [
 "zstandard==0.23.0",
 ]
 
+[project.optional-dependencies]
+ui = ["streamlit>=1.46,<2", "pyecharts>=2.0,<3"]
+
 [tool.black]
 line-length = 120
 skip-string-normalization = true
