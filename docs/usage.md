@@ -26,6 +26,14 @@ spider_name基于正则全文匹配，例如stock/basic/*将运行所有stock/ba
 
 该命令将从jobs.yaml文件中找到对应的job，然后运行该job下的所有spider
 
+#### clear 清空表数据
+
+`python main.py run clear [OPTIONS] SPIDER_NAME`
+
+该命令将清空（TRUNCATE）匹配spider对应表中的所有数据，表结构保留  
+spider_name基于正则全文匹配，例如`stock/quotes/.*`将清空stock/quotes下所有spider的表  
+执行前会列出将被清空的表并要求确认，使用`-y/--yes`跳过确认
+
 ## 使用K8S
 
 项目提供了基于Helm的部署模板，编写好values.yaml后直接部署到集群即可，会自动创建CronJob用于定时更新

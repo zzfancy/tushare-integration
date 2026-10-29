@@ -106,6 +106,31 @@ class CrawlManager(object):
         # 如果有异常就抛出
         self.raise_for_signal()
 
+    def get_table_name(self, spider: str) -> str:
+        spider_cls = self.process.spider_loader.load(spider)
+        if spider_cls.custom_settings and spider_cls.custom_settings.get("TABLE_NAME"):
+            return spider_cls.custom_settings["TABLE_NAME"]
+        return spider.split("/")[-1]
+
+    def get_tables(self, spider: str) -> list[str]:
+        """
+        根据spider通配符获取对应的表名
+        :param spider: 通配符
+        :return: 表名列表
+        """
+        tables = []
+        for name in self.list_spiders(spider):
+            table_name = self.get_table_name(name)
+            if table_name not in tables:
+                tables.append(table_name)
+        return tables
+
+    def truncate_tables(self, tables: list[str]):
+        db_engine = DatabaseEngineFactory.create(self.settings)
+        for table_name in tables:
+            logging.info(f"truncate table {self.settings.database.db_name}.{table_name}")
+            db_engine.truncate_table(table_name)
+
     def get_all_spiders(self, spiders):
         dependencies = [spiders]
         # 采集服务不是并发安全的，开启依赖解析的情况下可能会导致数据出现重复等问题

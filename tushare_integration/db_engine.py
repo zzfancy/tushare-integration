@@ -40,6 +40,9 @@ class DBEngine(object):
     def create_table(self, table_name: str, schema: dict) -> None:
         raise NotImplementedError
 
+    def truncate_table(self, table_name: str) -> None:
+        raise NotImplementedError
+
     def query_df(self, sql: str) -> pd.DataFrame:
         raise NotImplementedError
 
@@ -83,6 +86,10 @@ class SQLAlchemyEngine(DBEngine):
                 )
             )
         )
+
+    def truncate_table(self, table_name: str) -> None:
+        self.conn.execute(statement=text(f"TRUNCATE TABLE `{self.settings.database.db_name}`.`{table_name}`"))
+        self.conn.commit()
 
     def query_df(self, sql: str) -> pd.DataFrame:
         return pd.read_sql(sql, self.conn)
@@ -133,6 +140,9 @@ class ClickhouseEngine(DBEngine):
                 template_params=self.settings.database.template_params,
             )
         )
+
+    def truncate_table(self, table_name: str) -> None:
+        self.client.command(f"TRUNCATE TABLE IF EXISTS `{self.settings.database.db_name}`.`{table_name}`")
 
     def query_df(self, sql: str) -> pd.DataFrame:
         return self.client.query_df(sql)
